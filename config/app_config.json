@@ -1,0 +1,19 @@
+{
+  "app_name": "FoodVision AI",
+  "version": "2.0.0",
+  "features": {
+    "ai_recognition": true,
+    "voice_control": true,
+    "social_features": true,
+    "meal_planning": true,
+    "recipe_generation": true,
+    "progress_tracking": true,
+    "dark_mode": true,
+    "offline_mode": false
+  },
+  "limits": {
+    "max_file_size_mb": 32,
+    "max_daily_uploads": 100,
+    "max_meal_items": 20
+  }
+}
