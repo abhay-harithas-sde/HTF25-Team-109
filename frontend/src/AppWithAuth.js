@@ -5,6 +5,8 @@ import { AuthProvider, useAuth } from './components/Auth';
 import Auth from './components/Auth';
 import App from './App';
 import { User, LogOut, Settings } from 'lucide-react';
+import { authAPI, healthCheck } from './utils/api';
+import AuthDebug from './components/AuthDebug';
 
 // Main App wrapper with authentication
 const AppWithAuth = () => {
@@ -21,36 +23,49 @@ const AuthenticatedApp = () => {
   const [showAuth, setShowAuth] = useState(false);
   const [showUserMenu, setShowUserMenu] = useState(false);
 
-  // Check for existing token on app load
+  // Check for existing token on app load and verify backend connectivity
   useEffect(() => {
-    const token = localStorage.getItem('token');
-    const savedUser = localStorage.getItem('user');
-    
-    if (token && savedUser) {
-      // Verify token is still valid
-      verifyToken(token);
-    }
+    const initializeApp = async () => {
+      // First check if backend is accessible
+      try {
+        const healthResult = await healthCheck();
+        if (!healthResult.success) {
+          console.warn('Backend health check failed:', healthResult.error);
+          toast.error('Unable to connect to server. Some features may not work.');
+        }
+      } catch (error) {
+        console.warn('Backend health check error:', error);
+        toast.error('Unable to connect to server. Some features may not work.');
+      }
+
+      // Then check for existing authentication
+      const token = localStorage.getItem('token');
+      const savedUser = localStorage.getItem('user');
+      
+      if (token && savedUser) {
+        // Verify token is still valid
+        verifyToken(token);
+      }
+    };
+
+    initializeApp();
   }, []);
 
   const verifyToken = async (token) => {
     try {
-      const response = await fetch('/api/auth/verify-token', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ token }),
-      });
+      const result = await authAPI.verifyToken(token);
 
-      if (!response.ok) {
+      if (!result.success) {
         // Token is invalid, clear storage
         localStorage.removeItem('token');
         localStorage.removeItem('user');
+        logout();
       }
     } catch (error) {
       console.error('Token verification failed:', error);
       localStorage.removeItem('token');
       localStorage.removeItem('user');
+      logout();
     }
   };
 
@@ -60,9 +75,9 @@ const AuthenticatedApp = () => {
     toast.success('👋 Logged out successfully');
   };
 
-  const handleAuthSuccess = () => {
+  const handleAuthSuccess = (userData) => {
     setShowAuth(false);
-    toast.success(`🎉 Welcome${user?.username ? `, ${user.username}` : ''}!`);
+    toast.success(`🎉 Welcome${userData?.username ? `, ${userData.username}` : ''}!`);
   };
 
   // Show loading spinner while checking authentication
@@ -182,6 +197,9 @@ const AuthenticatedApp = () => {
             <Auth onClose={() => setShowAuth(false)} onSuccess={handleAuthSuccess} />
           )}
         </AnimatePresence>
+
+        {/* Debug Panel - Remove in production */}
+        {process.env.NODE_ENV === 'development' && <AuthDebug />}
       </div>
     );
   }
