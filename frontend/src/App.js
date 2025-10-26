@@ -16,6 +16,8 @@ import VoiceControl from './components/VoiceControl';
 import ProgressTracker from './components/ProgressTracker';
 import RecipeGenerator from './components/RecipeGenerator';
 import LoadingSpinner from './components/LoadingSpinner';
+import Auth, { AuthProvider, useAuth } from './components/Auth';
+import './components/Auth.css';
 
 // Create App Context for global state management
 const AppContext = createContext();

@@ -26,8 +26,14 @@ from functools import lru_cache
 import hashlib
 import pickle
 
+# Import authentication blueprint
+from auth import auth_bp
+
 app = Flask(__name__)
 CORS(app)
+
+# Register authentication blueprint
+app.register_blueprint(auth_bp, url_prefix='/api/auth')
 
 # Configuration
 app.config['UPLOAD_FOLDER'] = 'uploads'
