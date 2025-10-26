@@ -145,3 +145,4 @@ models/*.pth
 !logs/.gitkeep
 !temp/.gitkeep
 !models/.gitkeep
+.vercel

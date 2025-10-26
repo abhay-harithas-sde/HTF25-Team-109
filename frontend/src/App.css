@@ -514,8 +514,7 @@ body {
     grid-template-columns: 1fr 1fr;
   }
 }
-/* Anal
-ytics Styles */
+/* Analytics Styles */
 .analytics {
   background: rgba(255, 255, 255, 0.95);
   border-radius: 20px;
@@ -1281,8 +1280,8 @@ ytics Styles */
     padding: 1rem;
   }
 }
-/
-* ===== ENHANCED MODERN STYLING ===== */
+
+/* ===== ENHANCED MODERN STYLING ===== */
 
 /* Dark Mode Support */
 .App.dark-mode {
